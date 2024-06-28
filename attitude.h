@@ -1,8 +1,6 @@
 #ifndef ATTITUDE_H
 #define ATTITUDE_H
 
-#define COS45DEG 0.525322f
-
 struct DCM {
   float a11;
   float a12;
@@ -24,7 +22,7 @@ class Attitude {
   public:
     void initAttitude();
     void updateAttitude(float* new_quat);
-    bool isTilted45deg();
+    bool isTilted(float threshold_cos);
 };
 
 void Attitude::initAttitude() {
@@ -72,11 +70,11 @@ void Attitude::updateDCM() {
   return;
 }
 
-bool Attitude::isTilted45deg() {
-  float xb_proj_on_xi;
-  xb_proj_on_xi = dcm.a11;
+bool Attitude::isTilted(float threshold_cos) {
+  float zb_proj_on_zi;
+  zb_proj_on_zi = dcm.a33;
 
-  return (xb_proj_on_xi > COS45DEG);
+  return (zb_proj_on_zi <= threshold_cos);
 }
 
 #endif // MPU9250_H

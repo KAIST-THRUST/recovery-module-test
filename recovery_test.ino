@@ -5,6 +5,12 @@
 #define SERVO_PWM 9
 #define SAMPLE_RATE_HZ 40
 
+#define COS45DEG 0.525322f
+#define COS30DEG 0.866025f
+#define COS35DEG 0.819152f
+
+#define THRESHOLD_COS COS35DEG // change this as cos(trigger degree) as you want.
+
 MPU9250 mpu;
 Servo servo;
 Attitude attitude;
@@ -66,7 +72,8 @@ void readAndUpdateNewAttitude() {
 
 void triggerServo() {
   // check current attitude satisfies trigger condition.
-  if (attitude.isTilted45deg()) {
+  Serial.println(attitude.isTilted(THRESHOLD_COS));
+  if (attitude.isTilted(THRESHOLD_COS)) {
     servo.write(90); // triggered
   } else {
     servo.write(0); // not triggered
